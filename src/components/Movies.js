@@ -7,38 +7,48 @@ function Movies() {
     const [pageNum, setPageNum] = useState(1);
     const [watchList, setWatchList] = useState([]);
     const [hovered,sethovered]=useState('')
+
+    // Function to handle pagination for next page
     const onNext = () => {
         setPageNum(pageNum + 1)
     }
 
+     // Function to handle pagination for previous page
     const onPrev = () => {
         if (pageNum > 1) {
             setPageNum(pageNum - 1)
         }
     }
+
+    // Function to add a movie to the watchlist
     const addToWatchList = (movie) => {
         const newWatchList = [...watchList, movie]
         setWatchList(newWatchList);
         localStorage.setItem('imdb',JSON.stringify(newWatchList))
     }
+    
+     // Function to remove a movie from the watchlist
     const removeFromWatchList = (movie) => {
         const filteredWatchlist = watchList.filter((m) => {
-            return (m.id=movie.id);
+            return (m.id=movie.id);                             // Remove the movie with the same ID from the watchlist
         })
         setWatchList(filteredWatchlist);
         localStorage.setItem('imdb',JSON.stringify(filteredWatchlist));
 
     }
-console.log(movies)
+    console.log(movies)
     console.log(watchList)
+    // Function to show add/remove buttons when hovering over a movie
     const showButton = (id) => {
     sethovered(id)
     }
+
+    // Function to hide add/remove buttons when not hovering over a movie
     const hideButton = (id) => {
     sethovered('')
     }
 
-
+    // Fetch movie data from the API when pageNum changes
     useEffect(() => {
         (function () {
             axios
@@ -53,10 +63,11 @@ console.log(movies)
 
     return (
         <div>
-            <div className='text-2xl mb-8 font-bold  text-center'>
+            <div className='text-2xl mb-8 font-bold  text-center'>              {/* Heading */}
                 Trending Movies
             </div>
             <div className='flex flex-wrap'>
+                     {/* Map through movies and render each movie */}
                 {movies.map((movie) => {
                     return <div
                         //below code onMouseOver & onMouseLeave purpose => Whenever you hover on any movie, then only add and remove button will show, else it will not show ,, this is beneficial for good looking
@@ -99,7 +110,7 @@ console.log(movies)
 
 
             </div>
-            <Pagination onPrevProp={onPrev} onNextProp={onNext} pageNumProp={pageNum} />
+            <Pagination onPrevProp={onPrev} onNextProp={onNext} pageNumProp={pageNum} />            {/* Pagination */}
         </div>
     )
 }
