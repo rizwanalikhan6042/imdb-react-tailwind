@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react'
 import Movies from './Movies';
 
 function WatchList() {
+  // State variables for storing favourites, genres, current genre, rating, and search string
   const [favourites, setfavourites] = useState([]);
   const [genres, setGenres] = useState([]);
   const [currGenre, setCurrGenre] = useState('All Genres');
   const [rating, setRating] = useState(0);
   const [searchstr, setSearchstr] = useState('')
 
+  // Object containing genre IDs and their corresponding names
   let genreids = {
     28: "Action",
     12: "Adventure",
@@ -31,13 +33,14 @@ function WatchList() {
 
 
   useEffect(() => {
-
+    // Fetch favourites from localStorage on component mount
     let moviefromLocalStorage = localStorage.getItem('imdb');
     moviefromLocalStorage = JSON.parse(moviefromLocalStorage);
     setfavourites(moviefromLocalStorage);
   }, [])
 
   useEffect(() => {
+     // Generate unique genres from favourites for filtering
     let temp = favourites.map((movie) => genreids[movie.genre_ids[0]])
     temp = new Set(temp)
     setGenres(['All Genres', ...temp])
@@ -47,8 +50,8 @@ function WatchList() {
   //genre filtering if genre is all genre , then all movies of favourite category will be shown , if not then filtered movies which is == to currMovie will be shown 
   let filteredArray = [];
   filteredArray = currGenre == 'All Genres' ? favourites : favourites.filter((movie) => genreids[movie.genre_ids[0]] == currGenre)
-  //sorting based on rating 
-
+  
+// Sorting favourites based on rating
   if (rating == -1) {
     filteredArray = filteredArray.sort(function (objA, objB) {
       return objB.vote_average - objA.vote_average;
@@ -70,14 +73,14 @@ function WatchList() {
     localStorage.setItem('imdb', JSON.stringify(newArr))
   }
 
-  //search 
+ // Filter favourites based on search string
   filteredArray=filteredArray.filter((movie)=>{
     return movie.title.toLowerCase().includes(searchstr.toLowerCase())
   })
 
   return (
     <>
-      <div className='mt-6 flex space-x-2 justify-center'>
+      <div className='mt-6 flex space-x-2 justify-center'>       {/* Genre buttons */}
         {genres.map((genre) => {
           return <button className={currGenre == genre ? 'm-2 text-lg p-1 px-2 bg-blue-400 text-white rounded-xl font-bold' :
             'm-2 text-lg p-1 px-2 bg-gray-400 hover:bg-blue-400 text-white rounded-xl font-bold'}
@@ -92,7 +95,7 @@ function WatchList() {
           </button>
         })}
       </div>
-      <div className='text-center '>
+      <div className='text-center '>                    {/* Search input */}
         <input type='text' className='border border-4 bg-gray-200 text-center p-1 m-2' placeholder='Search your Movies' 
         value={searchstr}
         onChange={(e)=>{
@@ -100,7 +103,7 @@ function WatchList() {
         }}
         />
       </div>
-
+       {/* Table of favourites */}
       <div class='overflow-hidden rounded-lg border border-gray-200 shadow-md m-5'>
         <table class='w-full border-collapse bg-white text-left text-sm text-gray-500'>
           <thead>
